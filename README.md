@@ -1,6 +1,5 @@
-# ext2SimDisk
-This is a project based on courese "operating system course design"
-
+# FileSystem
+A course project focus on a file system based on linux
 sishxo 
 jun zhao
 
