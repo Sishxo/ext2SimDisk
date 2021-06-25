@@ -1,9 +1,13 @@
 //这是一个基于linux second extension file system体系的模拟多用户文件系统的设计
 //author: Sishxo
+#ifndef _SIM_DISK_H_
+#define _SIM_DISK_H_
+#endif
 #include<iostream>
 #include<stdio.h>
 #include<string.h>
 #include<time.h>
+#include<unistd.h>
 using namespace std;
 
 #define BLOCK_SIZE 1024
@@ -29,12 +33,12 @@ using namespace std;
 #define DIR_DEF_PERMISSION 0755  //可读可写可运行&可读可运行&可读可运行
 
 #define FILESYSNAME "FileSystem.sys"
-
+/*
 struct User{
     char username[8];
-    char username[8];
+    char password[8];
 };
-
+*/
 struct Inode{
     unsigned short iInodeNo;//当前inode的编号
     unsigned short iMode;//rwx读写执行权限
@@ -128,4 +132,38 @@ extern char buffer[100000000];//100MB,缓存可用的最大磁盘容量100MB
 **write 写文件
 **cd 切换目录
 */
-
+void Ready();
+bool Format();
+bool Install();
+void printSuperBlock();
+void printInodeBitmap();
+void printBlockBitmap();
+int balloc(); //data block allocation
+int bfree();  //data block free
+bool mkdir(int parinoAddr,char name[]);							//目录创建函数。参数：上一层目录文件inode地址 ,要创建的目录名
+bool rmdir(int parinoAddr,char name[]);							//目录删除函数。参数：上一层目录文件inode地址 ,要创建的目录名
+bool create(int parinoAddr,char name[],char buf[]);				//创建文件函数
+bool del(int parinoAddr,char name[]);							//删除文件函数
+int rename(int parblockAddr,int file_dirlist,char name[]);      //更改文件名
+void mv(int parinoAddr,char name1[],char name2[],char name3[]); //移动文件
+void ls(int parinoaddr);										//显示当前目录下的所有文件和文件夹
+void cd(int parinoaddr,char name[]);							//进入当前目录下的name目录
+//void gotoxy(HANDLE hOut, int x, int y);							//移动光标到指定位置
+int cat(int parinoAddr,char name[],char p3[]);
+void vi(int parinoaddr,char name[],char buf[]);					//模拟一个简单vi，输入文本
+void writefile(Inode fileInode,int fileInodeAddr,char buf[]);	//将buf内容写回文件的磁盘块
+void inUsername(char username[]);								//输入用户名
+void inPasswd(char passwd[]);									//输入密码
+bool login();													//登陆界面
+bool check(char username[],char passwd[]);						//核对用户名，密码
+void gotoRoot();												//回到根目录
+void logout();													//用户注销
+bool useradd(char username[]);									//用户注册
+bool userdel(char username[]);									//用户删除
+void chmod(int parinoAddr,char name[],int pmode);				//修改文件或目录权限
+void touch(int parinoAddr,char name[],char buf[]);				//touch命令创建文件，读入字符
+void help();													//显示所有命令清单
+int findInodeAddr(int parinoAddr,char name[]);	                //找到文件夹名对应的inode地址
+void findfile(int parinoAddr,char name[]);                  	//进入当前目录下的name目录
+void PrintDirentStruct(char Cur_Dir_Name_sub[],int Cur_Dir_Addr_sub, int level);//树状显示
+void cmd(char str[]);	
